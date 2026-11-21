@@ -2,37 +2,44 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Rezepte">
+<meta name="theme-color" content="#ffffff">
 <title>Rezepte</title>
-<!-- Struktur ohne Design. Styling kommt später in style.css -->
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1><a href="#">Rezepte</a></h1>
-    <input id="suche" type="search" placeholder="Suchen">
-    <select id="kategorie"><option value="">Alle Kategorien</option></select>
+  <header class="top">
+    <a class="logo" href="#/">Rezepte</a>
+    <nav>
+      <a id="nav-raster" href="#/">Raster</a>
+      <a id="nav-buch" href="#/buch">Buch</a>
+    </nav>
   </header>
 
-  <main>
-    <!-- Liste aller Rezepte -->
-    <section id="liste"></section>
+  <!-- Raster (wie Instagram) -->
+  <main id="raster" class="raster"></main>
 
-    <!-- Einzelnes Rezept (#<id>) -->
-    <article id="detail" hidden>
-      <p><a href="#">Zurück</a></p>
-      <img id="d-bild" alt="">
-      <h2 id="d-titel"></h2>
-      <p id="d-info"></p>
-      <h3>Zutaten</h3>
-      <ul id="d-zutaten"></ul>
-      <h3>Zubereitung</h3>
-      <ol id="d-schritte"></ol>
-      <p id="d-hinweise"></p>
-      <p><a id="d-quelle" target="_blank" rel="noopener">Original-Video</a></p>
-    </article>
-  </main>
+  <!-- Einzelnes Rezept: nur Text -->
+  <article id="rezept" class="rezept" hidden>
+    <a class="zurueck" href="#/">Zurück</a>
+    <div id="rezept-inhalt"></div>
+  </article>
+
+  <!-- Buch: blättern -->
+  <section id="buch" class="buch" hidden>
+    <div id="buch-seite" class="buch-seite"></div>
+    <footer class="buch-nav">
+      <a id="buch-zurueck" href="#">←</a>
+      <span id="buch-zahl"></span>
+      <a id="buch-weiter" href="#">→</a>
+    </footer>
+  </section>
+
+  <p id="leer" class="leer" hidden>Noch keine Rezepte.</p>
 
   <script src="app.js"></script>
 </body>

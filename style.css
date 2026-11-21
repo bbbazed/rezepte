@@ -1,2 +1,53 @@
-/* bewusst leer - Design folgt */
-img { max-width: 100%; height: auto; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #111; background: #fff;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+a { color: inherit; text-decoration: none; }
+[hidden] { display: none !important; }
+
+/* Kopfzeile */
+.top {
+  position: sticky; top: 0; z-index: 2; background: #fff;
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding: calc(14px + env(safe-area-inset-top)) 16px 14px;
+  max-width: 935px; margin: 0 auto;
+}
+.logo { font-weight: 600; letter-spacing: -0.01em; }
+.top nav a { margin-left: 18px; color: #999; }
+.top nav a.aktiv { color: #111; }
+
+/* Raster */
+.raster {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+  max-width: 935px; margin: 0 auto;
+}
+.raster a { display: block; aspect-ratio: 1 / 1; background: #f2f2f2; overflow: hidden; }
+.raster img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.raster .ohne-bild { display: flex; align-items: flex-end; padding: 8px; font-size: 13px; line-height: 1.3; }
+
+/* Rezept-Text */
+.rezept, .buch-seite { max-width: 600px; margin: 0 auto; padding: 8px 20px 48px; }
+.zurueck { display: inline-block; color: #999; margin-bottom: 24px; }
+.text h1 { font-size: 26px; line-height: 1.2; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px; }
+.text .info { color: #999; margin-bottom: 28px; }
+.text h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin: 28px 0 10px; }
+.text ul, .text ol { padding-left: 1.2em; }
+.text li { margin-bottom: 6px; }
+.text .hinweise { margin-top: 24px; color: #555; }
+.text .quelle { display: inline-block; margin-top: 32px; color: #999; text-decoration: underline; }
+
+/* Buch */
+.buch-seite img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; margin-bottom: 24px; }
+.buch-nav {
+  position: sticky; bottom: 0; background: #fff;
+  display: flex; justify-content: space-between; align-items: center;
+  max-width: 600px; margin: 0 auto; padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  color: #999;
+}
+.buch-nav a { font-size: 22px; padding: 4px 12px; color: #111; }
+.buch-nav a.aus { color: #ddd; pointer-events: none; }
+
+.leer { text-align: center; color: #999; padding: 80px 20px; }

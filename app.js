@@ -7,15 +7,82 @@ function esc(s) {
   });
 }
 
+// ---------- Portionen-Rechner ----------
+var gewaehlt = {};   // id -> gewählte Portionen (nur für diese Sitzung)
+var BRUCH = { '½': 0.5, '¼': 0.25, '¾': 0.75, '⅓': 1 / 3, '⅔': 2 / 3, '⅛': 0.125 };
+var MENGE = /^(ca\.?\s*)?(\d+\s+[½¼¾⅓⅔⅛]|\d+\/\d+|\d+(?:[.,]\d+)?|[½¼¾⅓⅔⅛])(\s*[-–]\s*(\d+(?:[.,]\d+)?))?/;
+
+function zahl(t) {
+  t = t.trim();
+  var m = t.match(/^(\d+)\s+([½¼¾⅓⅔⅛])$/);
+  if (m) return parseInt(m[1], 10) + BRUCH[m[2]];
+  if (BRUCH[t]) return BRUCH[t];
+  if (t.indexOf('/') > 0) { var p = t.split('/'); return parseFloat(p[0]) / parseFloat(p[1]); }
+  return parseFloat(t.replace(',', '.'));
+}
+
+function schoen(x) {
+  var r = x >= 10 ? Math.round(x) : Math.round(x * 10) / 10;
+  if (Math.abs(r - 0.5) < 0.01) return '½';
+  if (Math.abs(r - 0.25) < 0.01 || Math.abs(x - 0.25) < 0.01) return '¼';
+  return String(r).replace('.', ',');
+}
+
+// Skaliert die Mengenangabe am Anfang einer Zutat ("200 g Mehl", "1,2 l Brühe", "7–10 g Paprika")
+function skaliere(z, f) {
+  if (f === 1 || /pro (person|portion)|per (person|serving)|nach geschmack|etwas|prise/i.test(z)) return z;
+  var m = z.match(MENGE);
+  if (!m) return z;
+  var neu = (m[1] || '') + schoen(zahl(m[2]) * f);
+  if (m[4]) neu += '–' + schoen(zahl(m[4]) * f);
+  return neu + z.slice(m[0].length);
+}
+
+function basis(r) { return r.portionen > 0 ? r.portionen : 1; }
+
+function zutatenHTML(r) {
+  var b = basis(r), n = gewaehlt[r.id] || b, f = n / b;
+  return (r.zutaten || []).map(function (z) { return '<li>' + esc(skaliere(z, f)) + '</li>'; }).join('');
+}
+
+function reglerText(r) {
+  var n = gewaehlt[r.id] || basis(r);
+  return r.portionen > 0 ? n + (n === 1 ? ' Portion' : ' Portionen') : '× ' + n;
+}
+
+function aendern(id, d) {
+  var r = rezepte.filter(function (x) { return x.id === id; })[0];
+  if (!r) return;
+  var n = (gewaehlt[r.id] || basis(r)) + d;
+  if (n < 1) return;
+  gewaehlt[r.id] = n;
+  var boxen = document.querySelectorAll('[data-rezept="' + id + '"]');
+  for (var i = 0; i < boxen.length; i++) {
+    boxen[i].querySelector('.zutaten').innerHTML = zutatenHTML(r);
+    boxen[i].querySelector('.regler-zahl').textContent = reglerText(r);
+  }
+}
+
+document.addEventListener('click', function (e) {
+  var t = e.target;
+  if (!t.classList || !t.classList.contains('regler-knopf')) return;
+  e.preventDefault();
+  var box = t.closest('[data-rezept]');
+  aendern(box.getAttribute('data-rezept'), parseInt(t.getAttribute('data-d'), 10));
+});
+
 // Rezept als schlichter Text
 function rezeptHTML(r, mitBild) {
-  var info = [r.zeit, r.portionen ? r.portionen + ' Portionen' : ''].filter(Boolean).join(' · ');
-  var h = '<div class="text">';
+  var h = '<div class="text" data-rezept="' + esc(r.id) + '">';
   if (mitBild && r.bild) h += '<img src="' + esc(r.bild) + '" alt="">';
   h += '<h1>' + esc(r.titel) + '</h1>';
-  if (info) h += '<p class="info">' + esc(info) + '</p>';
+  if (r.zeit) h += '<p class="info">' + esc(r.zeit) + '</p>';
   if (r.zutaten && r.zutaten.length) {
-    h += '<h2>Zutaten</h2><ul>' + r.zutaten.map(function (z) { return '<li>' + esc(z) + '</li>'; }).join('') + '</ul>';
+    h += '<div class="zutaten-kopf"><h2>Zutaten</h2>' +
+         '<span class="regler"><a href="#" class="regler-knopf" data-d="-1">−</a>' +
+         '<span class="regler-zahl">' + esc(reglerText(r)) + '</span>' +
+         '<a href="#" class="regler-knopf" data-d="1">+</a></span></div>' +
+         '<ul class="zutaten">' + zutatenHTML(r) + '</ul>';
   }
   if (r.schritte && r.schritte.length) {
     h += '<h2>Zubereitung</h2><ol>' + r.schritte.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ol>';

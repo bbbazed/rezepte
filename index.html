@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Rezepte</title>
+<!-- Struktur ohne Design. Styling kommt später in style.css -->
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1><a href="#">Rezepte</a></h1>
+    <input id="suche" type="search" placeholder="Suchen">
+    <select id="kategorie"><option value="">Alle Kategorien</option></select>
+  </header>
+
+  <main>
+    <!-- Liste aller Rezepte -->
+    <section id="liste"></section>
+
+    <!-- Einzelnes Rezept (#<id>) -->
+    <article id="detail" hidden>
+      <p><a href="#">Zurück</a></p>
+      <img id="d-bild" alt="">
+      <h2 id="d-titel"></h2>
+      <p id="d-info"></p>
+      <h3>Zutaten</h3>
+      <ul id="d-zutaten"></ul>
+      <h3>Zubereitung</h3>
+      <ol id="d-schritte"></ol>
+      <p id="d-hinweise"></p>
+      <p><a id="d-quelle" target="_blank" rel="noopener">Original-Video</a></p>
+    </article>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
